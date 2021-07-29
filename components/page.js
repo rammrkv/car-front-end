@@ -8,18 +8,11 @@ export default function Page() {
   const dispatch = useDispatch()
 
   // Tick the time every second
-  useInterval(() => {
-    dispatch({
-      type: 'TICK',
-      light: true,
-      lastUpdate: Date.now(),
-    })
-  }, 1000)
+
 
   return (
     <>
       <Nav />
-      <Clock />
       <Counter />
     </>
   )
