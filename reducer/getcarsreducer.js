@@ -1,10 +1,10 @@
-const initialState = {
+const initialStateCar = {
   carDetails : [],
   carData	: {},
   modelOpen : false
 }
 
-const getcarsReducer = (state = initialState, action) => {
+const getcarsReducer = (state = initialStateCar, action) => {
   switch (action.type) {
     
     case 'GET_CAR_INFO':

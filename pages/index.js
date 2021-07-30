@@ -24,7 +24,8 @@ class Index extends React.Component {
 		
 		const avblCars = await fetch(API_URL+'/getAvblCarList',{method:'POST'}).then(res=>res.json());
 		
-		if(avblCars.Status && avblCars.Status == 'Sucess' && avblCars.Car && avblCars.Car.length){
+		if(avblCars.Status && avblCars.Status == 'Success' && avblCars.Car && avblCars.Car.length){
+			
 			getCarDetails(avblCars.Car);
 		}
 	}
@@ -63,7 +64,7 @@ class Index extends React.Component {
 				{
 					(() => {
 
-						if(carData.brand){
+						if(carData.brand && carData.user){
 							
 							return (
 					

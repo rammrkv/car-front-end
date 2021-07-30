@@ -6,10 +6,15 @@ import { withRouter } from 'next/router';
 import { API_URL } from '../config';
 import axios from 'axios';
 import { Row, Col, Label, Modal, ModalBody} from 'reactstrap';
+import Select from 'react-select';
 
 if (typeof window === 'undefined') {
     global.window = {};
 }
+
+const dangerStyle = {
+  color: "red"
+};
 
 class DashBoard extends React.Component {
 	
@@ -18,11 +23,20 @@ class DashBoard extends React.Component {
         
         this.getMyCarDetails = this.getMyCarDetails.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.statusSelectChange = this.statusSelectChange.bind(this);
+        this.publishSelectChange = this.publishSelectChange.bind(this);
+        
+        this.changeBrand = ev => this.props.onChangeBrand(ev.target.value);
+        this.changeModel = ev => this.props.onChangeModel(ev.target.value);
+        this.changeYear = ev => this.props.onChangeYear(ev.target.value);
+        this.changeColour = ev => this.props.onChangeColour(ev.target.value);
+        this.changeRegistration = ev => this.props.onChangeRegistration(ev.target.value);
+        this.changeMileage = ev => this.props.onChangeMileage(ev.target.value);
     }
     
     async getMyCarDetails()
     {
-		const { setCarInfo } = this.props;
+		const { setCarInfo , setErrorMessage} = this.props;
 		 
 		const resp = await axios.post(
 							API_URL+'/getCarList',
@@ -32,6 +46,7 @@ class DashBoard extends React.Component {
 						
 		if(resp.data && resp.data.Car){
 			setCarInfo(resp.data.Car);
+			setErrorMessage('');
 		}
 	}
 	
@@ -39,6 +54,68 @@ class DashBoard extends React.Component {
     {
 		 e.preventDefault();
 		 
+		 const { setErrorMessage , carData , setCarInfo } = this.props;
+		 
+		 let urlVal = 'addCar';
+		 
+		 if(carData.car_id){
+			 urlVal = 'updateCarInfo';
+		 }
+		  axios
+            .post(
+               API_URL+'/'+urlVal,
+                carData,
+                {headers: {"Content-Type": "application/json", "Authorization" :"bearer "+window.localStorage.carJwt}}
+            ).then(async function (response) {
+                
+                if(response.data.Status == 'Success'){
+					
+					setErrorMessage('Car updated');
+					
+					//this.getMyCarDetails();
+					
+					//alert(123);
+					
+					const resp = await axios.post(
+							API_URL+'/getCarList',
+							{},
+							{headers: {"Content-Type" : "application/json", "Authorization" :"bearer "+window.localStorage.carJwt }}
+						);
+						
+					if(resp.data && resp.data.Car){
+						setCarInfo(resp.data.Car);
+						setTimeout(function(){ setErrorMessage('') }, 1500);
+					}
+				}
+				else{
+					setErrorMessage(response.data.Msg);
+				}
+				
+            })
+            .catch(function (error) {
+				
+				console.log('');
+				console.log('');
+				console.log(error);
+				console.log('');
+				console.log('');
+				
+                setErrorMessage('Unkonwn Error');
+            });
+	}
+	
+	statusSelectChange(selectedOption)
+	{
+		const { carData , setStatusChange } = this.props;
+		
+		setStatusChange(selectedOption.value);
+	}
+	
+	publishSelectChange(selectedOption)
+	{
+		const { carData , setPublishChange } = this.props;
+		
+		setPublishChange(selectedOption.value);
 	}
 	
     async componentDidMount() {
@@ -58,7 +135,7 @@ class DashBoard extends React.Component {
 	
     render() {
 		
-		const { carDetails, modelOpen, addNewCar , toggleModel , carData , setCarData } = this.props;
+		const { carDetails, modelOpen, addNewCar , toggleModel , carData , setCarData, addCarErr } = this.props;
 		
 		const columns = [
 			{title: "Brand", accessor: "brand" },
@@ -71,6 +148,19 @@ class DashBoard extends React.Component {
 			{title: "Published", accessor: "is_published" }
 		  ];
 		  
+		const statusOptions = [
+		  { value: 'A', label: 'Active' },
+		  { value: 'IA', label: 'In-Active' }
+		];
+		
+		const publishOptions = [
+		  { value: 'Y', label: 'Yes' },
+		  { value: 'N', label: 'No' }
+		];
+		
+		const statusDisps = { 'A': 'Active', 'IA' : 'In-Active' };
+		const publishDisps = { 'Y': 'Yes', 'N' : 'No' };
+		
 		return(
 		
 			<Layout>
@@ -152,6 +242,7 @@ class DashBoard extends React.Component {
 												required
 												name="brand"
 												value={carData.brand}
+												onChange={this.changeBrand}
 												/>
 											</td>
 										</tr>
@@ -166,6 +257,22 @@ class DashBoard extends React.Component {
 												required
 												name="model"
 												value={carData.model}
+												onChange={this.changeModel}
+												/>
+											</td>
+										</tr>
+										<tr>
+											<td>Colur</td>
+											<td>
+												<input
+												type="text"
+												className="form-control"
+												id="colour"
+												placeholder="Enter colour"
+												required
+												name="colour"
+												value={carData.colour}
+												onChange={this.changeColour}
 												/>
 											</td>
 										</tr>
@@ -179,7 +286,9 @@ class DashBoard extends React.Component {
 												placeholder="Enter year"
 												required
 												name="model_year"
+												maxlength="4"
 												value={carData.model_year}
+												onChange={this.changeYear}
 												/>
 											</td>
 										</tr>
@@ -194,6 +303,7 @@ class DashBoard extends React.Component {
 												required
 												name="registration_no"
 												value={carData.registration_no}
+												onChange={this.changeRegistration}
 												/>
 											</td>
 										</tr>
@@ -208,9 +318,56 @@ class DashBoard extends React.Component {
 												required
 												name="mileage_drove"
 												value={carData.mileage_drove}
+												onChange={this.changeMileage}
 												/>
 											</td>
 										</tr>
+										<tr>
+											<td>Status</td>
+											<td>
+												<Select
+												id="status"
+												name="status"
+												value={{value:carData.status,label:statusDisps[carData.status]}}
+												onChange={this.statusSelectChange}
+												options={statusOptions}
+											  />
+											</td>
+										</tr>
+										<tr>
+											<td>Publish</td>
+											<td>
+												<Select
+												id="status"
+												name="status"
+												value={{value:carData.is_published,label:publishDisps[carData.is_published]}}
+												onChange={this.publishSelectChange}
+												options={publishOptions}
+											  />
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+											</td>
+											<td>
+												{addCarErr ? (
+													<div style={dangerStyle}>
+														{addCarErr}
+													</div>
+												) : (
+													""
+												)}
+											</td>
+										</tr>
+										<tr>
+											<td>
+											</td>
+											<td>
+												<button type="submit" className="btn btn-primary">Submit</button>
+											</td>
+										</tr>
+					
 									</table>
 									   
 								</form>
@@ -237,10 +394,26 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    onChangeBrand: value =>
+        dispatch({ type: "UPDATE_FIELD", key: 'brand', value }),
+    onChangeModel: value =>
+        dispatch({ type: "UPDATE_FIELD", key: 'model', value }),
+    onChangeYear: value =>
+        dispatch({ type: "UPDATE_FIELD", key: 'model_year', value }),
+    onChangeColour: value =>
+        dispatch({ type: "UPDATE_FIELD", key: 'colour', value }),
+    onChangeRegistration: value =>
+        dispatch({ type: "UPDATE_FIELD", key: 'registration_no', value }),
+    onChangeMileage: value =>
+        dispatch({ type: "UPDATE_FIELD", key: 'mileage_drove', value }),
     setCarInfo: value =>
         dispatch({ type: "SET_CAR_INFO", payload : value }),
     setCarData: value =>
         dispatch({ type: "SET_CAR_DATA", payload : value }),
+    setStatusChange: value =>
+        dispatch({ type: "SET_STATUS_CHANGE", payload : value }),
+    setPublishChange: value =>
+        dispatch({ type: "SET_PUBLISH_CHANGE", payload : value }),
     addNewCar: () =>
         dispatch({ type: "ADD_NEW_CAR" }),
     toggleModel: () =>
@@ -250,7 +423,9 @@ const mapDispatchToProps = dispatch => ({
     closeModel: () =>
         dispatch({
       type: 'CLOSE_MODEL'
-    })
+    }),
+    setErrorMessage: value =>
+        dispatch({ type: "SET_ERROR",  payload : value })
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DashBoard));
