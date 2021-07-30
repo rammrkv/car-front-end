@@ -27,7 +27,8 @@ class Header extends React.Component {
     {
 		 const { router} = this.props;
 		 window.localStorage.setItem('carJwt', '');
-		 router.push('/');
+		 //router.push('/');
+		 window.location.href = '/';
 	}
 	
 	async componentDidMount() {
