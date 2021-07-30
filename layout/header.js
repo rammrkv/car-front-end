@@ -89,6 +89,7 @@ class Header extends React.Component {
 								<div className="Header" style={headerStyle}>
 									<button onClick={()=>router.push('/login')}>Sing-In</button>
 									<button onClick={()=>router.push('/register')}>Register</button>
+									<button onClick={()=>router.push('/')}>Home</button>
 								 </div>
 							);
 						}
