@@ -21,8 +21,9 @@ class DashBoard extends React.Component {
 	constructor(props) {
         super(props);
         
-        this.getMyCarDetails = this.getMyCarDetails.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.getMyCarDetails = this.getMyCarDetails.bind(this);
+       
         this.statusSelectChange = this.statusSelectChange.bind(this);
         this.publishSelectChange = this.publishSelectChange.bind(this);
         
@@ -46,62 +47,40 @@ class DashBoard extends React.Component {
 						
 		if(resp.data && resp.data.Car){
 			setCarInfo(resp.data.Car);
-			setErrorMessage('');
+			//setErrorMessage('');
 		}
 	}
 	
-	handleSubmit(e)
+	async handleSubmit(e)
     {
-		 e.preventDefault();
-		 
-		 const { setErrorMessage , carData , setCarInfo } = this.props;
-		 
-		 let urlVal = 'addCar';
-		 
-		 if(carData.car_id){
-			 urlVal = 'updateCarInfo';
-		 }
-		  axios
-            .post(
-               API_URL+'/'+urlVal,
-                carData,
-                {headers: {"Content-Type": "application/json", "Authorization" :"bearer "+window.localStorage.carJwt}}
-            ).then(async function (response) {
-                
-                if(response.data.Status == 'Success'){
+		e.preventDefault();
+
+		const { setErrorMessage , carData , setCarInfo  } = this.props;
+
+		let urlVal = 'addCar';
+
+		if(carData.car_id){
+			urlVal = 'updateCarInfo';
+		}
+
+		const response = await axios.post(
+								API_URL+'/'+urlVal,
+								carData,
+								{headers: {"Content-Type": "application/json", "Authorization" :"bearer "+window.localStorage.carJwt}}
+							);
 					
-					setErrorMessage('Car updated');
-					
-					//this.getMyCarDetails();
-					
-					//alert(123);
-					
-					const resp = await axios.post(
-							API_URL+'/getCarList',
-							{},
-							{headers: {"Content-Type" : "application/json", "Authorization" :"bearer "+window.localStorage.carJwt }}
-						);
-						
-					if(resp.data && resp.data.Car){
-						setCarInfo(resp.data.Car);
-						setTimeout(function(){ setErrorMessage('') }, 1500);
-					}
-				}
-				else{
-					setErrorMessage(response.data.Msg);
-				}
+		if(response.data.Status == 'Success'){
+			
+			this.getMyCarDetails();
+			setErrorMessage('Car updated')
 				
-            })
-            .catch(function (error) {
-				
-				console.log('');
-				console.log('');
-				console.log(error);
-				console.log('');
-				console.log('');
-				
-                setErrorMessage('Unkonwn Error');
-            });
+			setTimeout(function(){setErrorMessage('')},1500);
+
+		}
+		else{
+			
+			setErrorMessage(response.data.Msg);
+		}
 	}
 	
 	statusSelectChange(selectedOption)
@@ -120,7 +99,7 @@ class DashBoard extends React.Component {
 	
     async componentDidMount() {
 		
-		const { closeModel } = this.props;
+		const { closeModel , setErrorMessage } = this.props;
 		
 		closeModel();
 		
@@ -131,6 +110,8 @@ class DashBoard extends React.Component {
 		}
 		
 		await this.getMyCarDetails();
+		
+		setErrorMessage('');
 	}
 	
     render() {
