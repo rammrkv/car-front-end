@@ -22,6 +22,7 @@ class DashBoard extends React.Component {
         super(props);
         
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.deleteCar = this.deleteCar.bind(this);
         this.getMyCarDetails = this.getMyCarDetails.bind(this);
        
         this.statusSelectChange = this.statusSelectChange.bind(this);
@@ -48,6 +49,31 @@ class DashBoard extends React.Component {
 		if(resp.data && resp.data.Car){
 			setCarInfo(resp.data.Car);
 			//setErrorMessage('');
+		}
+	}
+	
+	async deleteCar(carId)
+    {
+		const { closeModel } = this.props;
+		
+		let confirm = window.confirm('Are you sure want to delete this car ?');
+		
+		if(confirm){
+			
+			const response = await axios.post(
+								API_URL+'/updateCarStatus',
+								{car_id:carId,status:'D'},
+								{headers: {"Content-Type": "application/json", "Authorization" :"bearer "+window.localStorage.carJwt}}
+							);
+					
+			if(response.data.Status == 'Success'){
+				closeModel();
+				this.getMyCarDetails();
+				alert(response.data.Msg);
+			}
+			else{
+				alert(response.data.Msg);
+			}
 		}
 	}
 	
@@ -187,7 +213,7 @@ class DashBoard extends React.Component {
 								))}
 								<td key="action">
 									<button onClick={()=>setCarData(carVal)}>Edit</button>
-									<button >Delete</button>
+									<button onClick={()=>this.deleteCar(carVal.car_id)}>Delete</button>
 								</td>
 							  </tr>
 							))}
