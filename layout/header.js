@@ -71,7 +71,7 @@ class Header extends React.Component {
 					{
 						(() => {
 
-							if(userLoggedIn){
+							if(userLoggedIn && customer.fisrt_name){
 								
 								return(
 									<div className="Header" style={headerStyle}>Welcome {customer.fisrt_name} {customer.last_name}

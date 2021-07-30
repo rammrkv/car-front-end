@@ -43,6 +43,10 @@ class DashBoard extends React.Component {
 	
     async componentDidMount() {
 		
+		const { closeModel } = this.props;
+		
+		closeModel();
+		
 		var userLoggedIn = (window.localStorage && window.localStorage.carJwt) ? true : false;
 		
 		if(!userLoggedIn){
@@ -81,6 +85,24 @@ class DashBoard extends React.Component {
 							<th key="action">Action</th>
 							</tr>
 						</thead>
+						
+						{
+							(() => {
+
+								if(!carDetails.length){
+									
+									return (
+										<tbody>
+											<tr><td>No cars found</td></tr>
+										</tbody>
+									)
+								}
+								
+							return '';
+							
+							})()
+						}
+							
 						<tbody>
 							{carDetails.map((carVal, i) => (
 							  <tr key={i}>
@@ -224,6 +246,10 @@ const mapDispatchToProps = dispatch => ({
     toggleModel: () =>
         dispatch({
       type: 'TOGLE_MODEL'
+    }),
+    closeModel: () =>
+        dispatch({
+      type: 'CLOSE_MODEL'
     })
 });
 

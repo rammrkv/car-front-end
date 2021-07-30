@@ -39,6 +39,12 @@ const dashboardReducer = (state = initialState, action) => {
         ...state,
         modelOpen: !state.modelOpen,
       }
+     case 'CLOSE_MODEL':
+      return {
+        ...state,
+        modelOpen: false,
+        carData: initialState.carData
+      }
     default:
       return state
   }
