@@ -1,6 +1,16 @@
 const initialState = {
   carDetails : [],
-  carData	: {},
+  carData	: {
+					car_id : '',
+					brand : '',
+					model : '',
+					model_year : '',
+					colour : '',
+					registration_no : '',
+					mileage_drove : '',
+					status : '',
+					is_published : '',
+				},
   modelOpen : false
 }
 
@@ -17,6 +27,12 @@ const dashboardReducer = (state = initialState, action) => {
         ...state,
         carData: action.payload,
         modelOpen: true
+      }
+    case 'ADD_NEW_CAR':
+      return {
+        ...state,
+        modelOpen: true,
+        carData: initialState.carData
       }
     case 'TOGLE_MODEL':
       return {
