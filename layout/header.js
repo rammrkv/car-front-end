@@ -19,7 +19,15 @@ class Header extends React.Component {
 	
 	constructor(props) {
         super(props);
+        this.handleLogout = this.handleLogout.bind(this);
     }
+    
+    handleLogout()
+    {
+		 const { router} = this.props;
+		 window.localStorage.setItem('carJwt', '');
+		 router.push('/');
+	}
     
     render() {
 		
@@ -42,7 +50,8 @@ class Header extends React.Component {
 							if(currentUser){
 								
 								return(
-									<div className="Header" style={headerStyle}>Hai {window.localStorage.user.first_name}
+									<div className="Header" style={headerStyle}>Welcome ..
+									<button onClick={this.handleLogout}>Logout</button>
 									</div>
 								);
 							}

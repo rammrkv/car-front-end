@@ -1,6 +1,7 @@
 const initialState = {
   email_id: '',
-  password: ''
+  password: '',
+  loginError : ''
 }
 
 const authReducer = (state = initialState, action) => {
@@ -17,6 +18,12 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         email_id: action.payload,
+      }
+    case 'SET_ERROR':
+    
+      return {
+        ...state,
+        loginError: action.payload,
       }
     case 'SET_PASSWORD':
     
