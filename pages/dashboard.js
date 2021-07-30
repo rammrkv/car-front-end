@@ -55,7 +55,7 @@ class DashBoard extends React.Component {
     {
 		e.preventDefault();
 
-		const { setErrorMessage , carData , setCarInfo  } = this.props;
+		const { setErrorMessage , carData , setCarInfo , addNewCar } = this.props;
 
 		let urlVal = 'addCar';
 
@@ -72,7 +72,11 @@ class DashBoard extends React.Component {
 		if(response.data.Status == 'Success'){
 			
 			this.getMyCarDetails();
-			setErrorMessage('Car updated')
+			setErrorMessage('Car updated');
+			
+			if(!carData.car_id){
+				addNewCar();
+			}
 				
 			setTimeout(function(){setErrorMessage('')},1500);
 
