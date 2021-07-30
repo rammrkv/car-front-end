@@ -1,15 +1,17 @@
-import { useMemo } from 'react'
-import { createStore, applyMiddleware , combineReducers } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { useMemo } from 'react';
+import { createStore, applyMiddleware , combineReducers } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
-import { localStorageMiddleware } from './middleware'
+import { localStorageMiddleware } from './middleware';
 
-import testReducer from './reducer/testreducer'
-import authReducer from './reducer/authreducer'
+import testReducer from './reducer/testreducer';
+import authReducer from './reducer/authreducer';
+import getcarsReducer from './reducer/getcarsreducer';
 
 const rootReducer = combineReducers({
     test: testReducer,
-    auth: authReducer
+    auth: authReducer,
+    carInfo: getcarsReducer,
 });
 
 let store

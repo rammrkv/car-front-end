@@ -1,5 +1,5 @@
 const initialState = {
-  email: '',
+  email_id: '',
   password: ''
 }
 
@@ -8,11 +8,21 @@ const authReducer = (state = initialState, action) => {
 	  
     case 'LOGIN':
     
-    console.log('LOGIN');
-    console.log(state);
-    
       return {
         ...state
+      }
+      
+    case 'SET_EMAIL':
+    
+      return {
+        ...state,
+        email_id: action.payload,
+      }
+    case 'SET_PASSWORD':
+    
+      return {
+        ...state,
+        password: action.payload,
       }
     default:
       return state
