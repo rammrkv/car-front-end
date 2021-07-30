@@ -9,10 +9,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router'
 import { API_URL } from '../config'
-import Head from 'next/head'
+import Head from 'next/head';
+import axios from 'axios';
 
 if (typeof window === 'undefined') {
-    global.window = {}
+    global.window = {};
 }
 
 class Header extends React.Component {
@@ -28,13 +29,36 @@ class Header extends React.Component {
 		 window.localStorage.setItem('carJwt', '');
 		 router.push('/');
 	}
+	
+	async componentDidMount() {
+		
+		const {  setLoginCheck , setUserInfo , customer } = this.props;
+		
+		var userLoggedIn = (window.localStorage && window.localStorage.carJwt) ? true : false;
+		
+		setLoginCheck(userLoggedIn);
+		
+		if(userLoggedIn){
+			
+			const resp = await axios.get(
+							API_URL+'/getCurrentUser',
+							{headers: {"Content-Type" : "application/json", "Authorization" :"bearer "+window.localStorage.carJwt }}
+						);
+			
+			if(resp.data.Status && resp.data.Status == 'LF'){
+				this.handleLogout();
+			}
+			
+			if(resp.data.User){
+				setUserInfo(resp.data.User);
+			}
+		}
+	}
     
     render() {
 		
-		const {  router  } = this.props;
-		
-		var currentUser = (window.localStorage && window.localStorage.carJwt) ? true : false;
-	
+		const {  router , userLoggedIn , customer } = this.props;
+				
 		return(
 
 			<React.Fragment>
@@ -47,10 +71,12 @@ class Header extends React.Component {
 					{
 						(() => {
 
-							if(currentUser){
+							if(userLoggedIn){
 								
 								return(
-									<div className="Header" style={headerStyle}>Welcome ..
+									<div className="Header" style={headerStyle}>Welcome {customer.fisrt_name} {customer.last_name}
+									<button onClick={()=>router.push('/dashboard')}>Dashboard</button>
+									<button onClick={()=>router.push('/')}>Home</button>
 									<button onClick={this.handleLogout}>Logout</button>
 									</div>
 								);
@@ -78,5 +104,17 @@ class Header extends React.Component {
 	}
 }
 
+const mapStateToProps = state => ({
+    ...state.auth,
+    userLoggedIn : state.auth.userLoggedIn,
+    customer : state.auth.customer
+});
 
-export default withRouter(Header);
+const mapDispatchToProps = dispatch => ({
+    setLoginCheck: value =>
+        dispatch({ type: "SET_USER_LOGIN", payload : value }),
+    setUserInfo: value =>
+        dispatch({ type: "SET_USER_INFO", payload : value })
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));

@@ -4,12 +4,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import { API_URL } from '../config';
-import { useForm } from 'react-hook-form';
 import axios from 'axios';
 
 const dangerStyle = {
   color: "red"
 };
+
+if (typeof window === 'undefined') {
+    global.window = {};
+}
 
 class Login extends React.Component {
 	
@@ -22,12 +25,22 @@ class Login extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
+    async componentDidMount() {
+		
+		var userLoggedIn = (window.localStorage && window.localStorage.carJwt) ? true : false;
+		
+		if(userLoggedIn){
+			this.props.router.push('/dashboard');
+		}
+	}
+	
     handleSubmit(e)
     {
 		 e.preventDefault();
+		 
+		 const { setErrorMessage , router, email_id , password } = this.props;
 		
-		 var formData = {'email_id':this.props.email_id,'password':this.props.password};
-		 const { setErrorMessage , router} = this.props;
+		 var formData = {'email_id':email_id,'password':password};
 		 
 		 axios
             .post(
@@ -54,13 +67,13 @@ class Login extends React.Component {
 	
     render() {
 		
-		const email_id = this.props.email_id;
-        const password = this.props.password;
-        const loginError = this.props.loginError;
-        
+		const { router, email_id , password , loginError } = this.props;
+		
 		return(
 		
 			<Layout> 
+			
+			<h2 >Login</h2>
 			
 			<form
                 acceptCharset="UTF-8"
@@ -68,43 +81,60 @@ class Login extends React.Component {
                 id="ajaxForm"
                 onSubmit={this.handleSubmit}
             >
-                <div className="form-group mb-2">
-                    <label >Email</label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="email_id"
-                        placeholder="Enter email"
-                        required
-                        name="email_id"
-                        value={email_id}
-                        onChange={this.changeEmail}
-                    />
-                </div>
-                
-                <div className="form-group mb-2">
-                    <label >Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        placeholder="Enter Password"
-                        required
-                        name="password"
-                        value={password}
-                        onChange={this.changePassword}
-                    />
-                </div>
-                
-                {loginError ? (
-                    <div style={dangerStyle}>
-                        {loginError}
-                    </div>
-                ) : (
-                    ""
-                )}
-                
-                <button type="submit" className="btn btn-primary">Submit</button>
+            
+				<table>
+					<tr>
+						<td>Email</td>
+						<td>
+							<input
+							type="email"
+							className="form-control"
+							id="email_id"
+							placeholder="Enter email"
+							required
+							name="email_id"
+							value={email_id}
+							onChange={this.changeEmail}
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td>Password</td>
+						<td>
+							<input
+								type="password"
+								className="form-control"
+								id="password"
+								placeholder="Enter Password"
+								required
+								name="password"
+								value={password}
+								onChange={this.changePassword}
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td>
+							{loginError ? (
+								<div style={dangerStyle}>
+									{loginError}
+								</div>
+							) : (
+								""
+							)}
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td>
+							<button type="submit" className="btn btn-primary">Submit</button>
+						</td>
+					</tr>
+				</table>
+				   
             </form>
             
 			</Layout>

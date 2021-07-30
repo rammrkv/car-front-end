@@ -7,11 +7,15 @@ import { localStorageMiddleware } from './middleware';
 import testReducer from './reducer/testreducer';
 import authReducer from './reducer/authreducer';
 import getcarsReducer from './reducer/getcarsreducer';
+import dashboardReducer from './reducer/dashboardreducer';
+import registerReducer from './reducer/registerreducer';
 
 const rootReducer = combineReducers({
     test: testReducer,
     auth: authReducer,
     carInfo: getcarsReducer,
+    dashboard: dashboardReducer,
+    register: registerReducer,
 });
 
 let store

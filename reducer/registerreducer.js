@@ -1,12 +1,14 @@
 const initialState = {
+  first_name: '',
+  last_name: '',
   email_id: '',
   password: '',
-  loginError : '',
+  registerError : '',
   userLoggedIn : false,
   customer : {}
 }
 
-const authReducer = (state = initialState, action) => {
+const registerReducer = (state = initialState, action) => {
   switch (action.type) {
 	  
     case 'LOGIN':
@@ -15,27 +17,20 @@ const authReducer = (state = initialState, action) => {
         ...state
       }
       
+    case 'SET_FIRST_NAME':
+      return {
+        ...state,
+        first_name: action.payload,
+      }
+    case 'SET_LAST_NAME':
+      return {
+        ...state,
+        last_name: action.payload,
+      }
     case 'SET_EMAIL':
       return {
         ...state,
         email_id: action.payload,
-      }
-    case 'SET_USER_INFO':
-      return {
-        ...state,
-        customer: action.payload,
-      }
-    case 'SET_USER_LOGIN':
-    
-      return {
-        ...state,
-        userLoggedIn: action.payload,
-      }
-    case 'SET_ERROR':
-    
-      return {
-        ...state,
-        loginError: action.payload,
       }
     case 'SET_PASSWORD':
     
@@ -43,9 +38,15 @@ const authReducer = (state = initialState, action) => {
         ...state,
         password: action.payload,
       }
+    case 'SET_ERROR':
+    
+      return {
+        ...state,
+        registerError: action.payload,
+      }
     default:
       return state
   }
 }
 
-export default authReducer;
+export default registerReducer;

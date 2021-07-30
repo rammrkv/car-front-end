@@ -8,10 +8,9 @@ import Layout from '../layout/layout'
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'next/router'
+import { withRouter } from 'next/router';
 import { API_URL } from '../config';
-import { Row, Col, Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button, CardLink, CardHeader , Label} from 'reactstrap';
-import { Modal, ModalBody, Form, FormGroup, Input } from 'reactstrap';
+import { Row, Col, Label, Modal, ModalBody} from 'reactstrap';
 
 class Index extends React.Component {
 	
@@ -59,60 +58,60 @@ class Index extends React.Component {
 							)
 						})
 					}
-				</Row>
-			</section>			
-			{
-				(() => {
+					</Row>
+				</section>			
+				{
+					(() => {
 
-					if(carData.brand){
-						
-						return (
-				
+						if(carData.brand){
+							
+							return (
+					
 								<Modal isOpen={modelOpen} toggle={toggleModel}>
 									<ModalBody >
-
-
-										<div >
-										<h2 >Car Details <button onClick={toggleModel}>Close</button></h2>
-										</div>
-										
-										<div >
-											<Label>Brand : {carData.brand}</Label>
-										</div>
-										
-										<div >
-											<Label>Model : {carData.model}</Label>
-										</div>
-										
-										<div >
-											<Label>Year : {carData.model_year}</Label>
-										</div>
-										
-										<div >
-											<Label>Colour : {carData.colour}</Label>
-										</div>
-										
-										<div >
-											<Label>Mileage : {carData.mileage_drove}</Label>
-										</div>
-										
-										<div >
-											<Label>Registration : {carData.registration_no}</Label>
-										</div>
-										
-										<div >
-											<Label>Owner : {carData.user.fisrt_name} {carData.user.last_name} ({carData.user.email_id})</Label>
-										</div>
-
+									
+									<div >
+									<h2 >Car Details <button onClick={toggleModel}>Close</button></h2>
+									</div>
+									
+									<table>
+										<tr>
+											<td><Label>Brand :</Label></td>
+											<td>{carData.brand}</td>
+										</tr>
+										<tr>
+											<td><Label>Model :</Label></td>
+											<td>{carData.model}</td>
+										</tr>
+										<tr>
+											<td><Label>Year :</Label></td>
+											<td>{carData.model_year}</td>
+										</tr>
+										<tr>
+											<td><Label>Colour :</Label></td>
+											<td>{carData.colour}</td>
+										</tr>
+										<tr>
+											<td><Label>Mileage :</Label></td>
+											<td>{carData.mileage_drove}</td>
+										</tr>
+										<tr>
+											<td><Label>Registration :</Label></td>
+											<td>{carData.registration_no}</td>
+										</tr>
+										<tr>
+											<td><Label>Owner :</Label></td>
+											<td>{carData.user.fisrt_name} {carData.user.last_name} ({carData.user.email_id})</td>
+										</tr>
+									</table>
 									</ModalBody>
 								</Modal>
-			
-						)
-					}
-						
-					return '';
-				})()
-			}						
+							)
+						}
+							
+						return '';
+					})()
+				}						
 			</Layout>
 			
 		)
