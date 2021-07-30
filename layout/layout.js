@@ -28,16 +28,15 @@ class Layout extends React.Component {
     render() {
 		
 		return(
-		
+
 			<div className="Layout" style={layoutStyle}>
-			<Header />
-			<div className="Content" style={contentStyle}>
-			  {this.props.children}
+				<Header />
+				<div className="Content" style={contentStyle}>
+				  {this.props.children}
+				</div>
+				<Footer />
 			</div>
-			<Footer />
-		  </div>
-		  
-		 )
+		)
 	}
 }
 

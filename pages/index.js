@@ -40,8 +40,6 @@ class Index extends React.Component {
 				<section>
 					<Row>
 					{
-						
-						
 						carDetails.map((carData, carInx) => {
 							
 							return (
@@ -59,14 +57,10 @@ class Index extends React.Component {
 									</div>
 								</Col>
 							)
-
 						})
-						
-						 
 					}
 				</Row>
-			</section>
-			
+			</section>			
 			{
 				(() => {
 
@@ -118,8 +112,7 @@ class Index extends React.Component {
 						
 					return '';
 				})()
-			}
-						
+			}						
 			</Layout>
 			
 		)
